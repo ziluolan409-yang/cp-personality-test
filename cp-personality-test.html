@@ -541,13 +541,10 @@ body {
   letter-spacing: 1px;
 }
 
-/* 音乐播放器区域 */
+/* 主题曲手写文字区域 */
 .music-section {
   margin-bottom: 20px;
   padding: 16px 12px;
-  background: rgba(200, 180, 150, 0.04);
-  border: 1.5px solid rgba(180, 160, 120, 0.2);
-  border-radius: 6px 16px 6px 14px;
   text-align: center;
 }
 
@@ -555,19 +552,36 @@ body {
   font-family: var(--font-hand);
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   letter-spacing: 1px;
 }
 
-.music-player {
-  display: flex;
-  justify-content: center;
+.music-song-name {
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  color: var(--text);
+  letter-spacing: 1px;
 }
 
-.music-player iframe {
-  max-width: 100%;
+.music-song-artist {
+  font-family: var(--font-song);
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-bottom: 8px;
 }
 
+.music-lyric {
+  text-align: center;
+  padding: 10px 14px;
+  margin: 8px 0;
+  font-family: var(--font-song);
+  font-size: 0.8rem;
+  color: var(--accent);
+  line-height: 2;
+  background: rgba(200,150,100,0.06);
+  border-radius: 8px;
+  border-left: 3px solid var(--crayon-yellow);
+}
 /* 操作按钮组 */
 .result-actions {
   display: flex;
@@ -1317,43 +1331,16 @@ function renderResult() {
     `;
   }).join('');
 
-  // 音乐播放器 + 网易云直达链接
+  // 主题曲
   const song = personality.song;
-  const hasSongId = song && song.id && song.id.length > 0;
-  const directUrl = hasSongId ? `https://music.163.com/#/song?id=${song.id}` : '';
-  const searchUrl = song ? `https://music.163.com/#/search/m/?s=${encodeURIComponent(song.name + ' ' + song.artist)}` : '';
   const musicHTML = song ? `
     <div class="music-section">
-      <div class="music-label">🎵 ${personality.name}的主题曲 · ${song.name} — ${song.artist}</div>
+      <div class="music-label">🎵 ${personality.name}的主题曲</div>
+      <div class="music-song-name">${song.name}</div>
+      <div class="music-song-artist">—— ${song.artist}</div>
       ${song.lyric ? `
-      <div style="text-align:center;padding:10px 14px;margin:8px 0;font-family:var(--font-song);font-size:0.8rem;color:var(--accent);line-height:2;background:rgba(200,150,100,0.06);border-radius:8px;border-left:3px solid var(--crayon-yellow);">
-        ${song.lyric}
-      </div>
+      <div class="music-lyric">${song.lyric}</div>
       ` : ''}
-      ${hasSongId ? `
-      <div class="music-player">
-        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0"
-          width="100%" height="86"
-          src="https://music.163.com/outchain/player?type=2&id=${song.id}&auto=0&height=66">
-        </iframe>
-      </div>
-      <div style="text-align:center;margin-top:8px;">
-        <a href="${directUrl}" target="_blank" rel="noopener"
-           style="display:inline-block;font-family:var(--font-hand);font-size:0.85rem;color:#fffef7;background:var(--crayon-brown);text-decoration:none;padding:8px 24px;border-radius:16px 8px 18px 10px;letter-spacing:2px;box-shadow:2px 2px 0 rgba(160,120,80,0.3);transition:all 0.12s;">
-          🎧 在网易云音乐中打开
-        </a>
-      </div>
-      ` : `
-      <div style="text-align:center;padding:8px;font-family:var(--font-song);font-size:0.75rem;color:var(--text-muted);">
-        ⚠️ 该歌曲暂未收录于网易云曲库
-      </div>
-      <div style="text-align:center;margin-top:8px;">
-        <a href="${searchUrl}" target="_blank" rel="noopener"
-           style="display:inline-block;font-family:var(--font-hand);font-size:0.8rem;color:var(--text-light);text-decoration:none;padding:6px 18px;border:1.5px solid var(--text-muted);border-radius:14px 6px 16px 8px;letter-spacing:1px;">
-          🔍 在网易云音乐中搜索
-        </a>
-      </div>
-      `}
     </div>
   ` : '';
 
