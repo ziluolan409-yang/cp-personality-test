@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>嗑CP人格属性测试</title>
+<!-- Google Fonts: 手写体 + 宋体 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS 变量 & 全局重置 — 日记本纸张风格
+   ============================================================ */
+:root {
+  --paper: #fbf6e8;
+  --paper-dark: #f0e8d0;
+  --card-bg: #fffef7;
+  --card-shadow: rgba(120, 100, 70, 0.10);
+  --text: #3d3025;
+  --text-light: #7a6b58;
+  --text-muted: #a89880;
+  --crayon-brown: #b8956e;
+  --crayon-orange: #d4956b;
+  --crayon-blue: #7eb8c9;
+  --crayon-green: #8db580;
+  --crayon-pink: #d4869b;
+  --crayon-purple: #b89bc4;
+  --crayon-yellow: #c9a940;
+  --accent: #c77d5a;
+  --accent-warm: #d4956b;
+  --font-hand: 'Ma Shan Zheng', 'ZCOOL XiaoWei', 'Comic Sans MS', cursive;
+  --font-song: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', 'PMingLiU', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background-color: var(--paper);
+  /* 日记本横线纹理 */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(180, 160, 120, 0.15) 27px,
+      rgba(180, 160, 120, 0.15) 28px
+    ),
+    /* 左侧装订线 */
+    linear-gradient(
+      90deg,
+      rgba(200, 160, 140, 0.12) 0px,
+      rgba(200, 160, 140, 0.12) 1px,
+      transparent 1px
+    );
+  background-size: 100% 28px, 100% 100%;
+  background-position: 0 0, 0 0;
+  color: var(--text);
+  font-family: var(--font-song);
+  min-height: 100vh;
+  line-height: 1.8;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 16px;
+}
+
+/* ============================================================
+   主容器
+   ============================================================ */
+#app {
+  width: 100%;
+  max-width: 600px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   卡片 — 日记本撕纸风格
+   ============================================================ */
+.card {
+  background: var(--card-bg);
+  border: 2px solid rgba(180, 160, 120, 0.25);
+  border-radius: 4px 16px 6px 12px;
+  box-shadow:
+    3px 3px 8px var(--card-shadow),
+    -1px -1px 4px rgba(0,0,0,0.03),
+    /* 撕纸毛边 */
+    inset 0 0 0 1px rgba(255,255,255,0.6);
+  padding: 28px 22px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+/* 撕纸效果：顶部不规则边缘 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      var(--card-bg) 2px,
+      transparent 3px,
+      var(--card-bg) 5px,
+      transparent 6px,
+      var(--card-bg) 8px
+    );
+}
+
+/* ============================================================
+   蜡笔圈手绘选项按钮
+   ============================================================ */
+.option-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--card-bg);
+  border: 2.5px solid var(--crayon-brown);
+  border-radius: 22px 14px 24px 16px;
+  color: var(--text);
+  font-family: var(--font-song);
+  font-size: 0.9rem;
+  padding: 14px 18px;
+  cursor: pointer;
+  /* 蜡笔双重描边 */
+  box-shadow:
+    1.5px 1.5px 0 var(--crayon-orange),
+    3px 3px 0 rgba(180, 140, 100, 0.25);
+  transition: all 0.15s ease;
+  margin-bottom: 12px;
+  line-height: 1.7;
+  position: relative;
+  outline: none;
+}
+
+/* 蜡笔涂抹质感 */
+.option-btn::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 24px 16px 26px 18px;
+  border: 1.5px solid var(--crayon-brown);
+  opacity: 0.35;
+  pointer-events: none;
+  transform: translate(1px, -1px);
+}
+
+.option-btn:hover {
+  background: rgba(200, 160, 120, 0.06);
+  transform: translate(1px, 1px);
+  box-shadow:
+    1px 1px 0 var(--crayon-orange),
+    2px 2px 0 rgba(180, 140, 100, 0.2);
+}
+
+.option-btn:active {
+  background: rgba(200, 160, 120, 0.12);
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.option-btn.selected {
+  background: rgba(200, 150, 100, 0.13);
+  border-color: var(--accent);
+  box-shadow:
+    1.5px 1.5px 0 var(--accent),
+    3px 3px 0 rgba(180, 120, 80, 0.2),
+    inset 0 0 20px rgba(200, 150, 100, 0.06);
+}
+
+.option-btn.selected::after {
+  border-color: var(--accent);
+  opacity: 0.45;
+}
+
+.option-label {
+  display: inline-block;
+  color: var(--accent-warm);
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  margin-right: 8px;
+  min-width: 18px;
+}
+
+/* ============================================================
+   按钮样式
+   ============================================================ */
+
+/* 主操作按钮 — 手绘风 */
+.btn-primary {
+  display: inline-block;
+  width: auto;
+  text-align: center;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 20px 10px 22px 12px;
+  color: #fffef7;
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  padding: 12px 36px;
+  cursor: pointer;
+  box-shadow:
+    2px 2px 0 #b06840,
+    4px 4px 0 rgba(180, 120, 80, 0.2);
+  transition: all 0.12s ease;
+  letter-spacing: 2px;
+}
+
+.btn-primary:hover {
+  background: #d48560;
+  transform: translate(1px, 1px);
+  box-shadow:
+    1px 1px 0 #b06840,
+    2px 2px 0 rgba(180, 120, 80, 0.15);
+}
+
+.btn-primary:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+/* 次要按钮 */
+.btn-secondary {
+  display: inline-block;
+  width: auto;
+  text-align: center;
+  background: transparent;
+  border: 2px solid var(--text-muted);
+  border-radius: 16px 8px 18px 10px;
+  color: var(--text-light);
+  font-family: var(--font-hand);
+  font-size: 0.95rem;
+  padding: 10px 24px;
+  cursor: pointer;
+  box-shadow: 1.5px 1.5px 0 rgba(160, 140, 110, 0.3);
+  transition: all 0.12s ease;
+}
+
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--text-light);
+  box-shadow: 1.5px 1.5px 0 rgba(140, 120, 90, 0.3);
+}
+
+/* ============================================================
+   屏幕切换
+   ============================================================ */
+.screen { display: none; }
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  animation: fadeSlideIn 0.35s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   首页
+   ============================================================ */
+.start-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.start-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 10px;
+  animation: gentleFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.start-title {
+  font-family: var(--font-hand);
+  font-size: 1.6rem;
+  color: var(--accent);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.start-subtitle {
+  font-family: var(--font-song);
+  font-size: 0.85rem;
+  color: var(--text-light);
+  letter-spacing: 2px;
+}
+
+.start-desc {
+  text-align: center;
+  font-family: var(--font-song);
+  font-size: 0.85rem;
+  color: var(--text-light);
+  line-height: 1.9;
+  margin-bottom: 10px;
+}
+
+.start-desc strong { color: var(--accent); font-weight: 600; }
+.start-desc .highlight { color: var(--crayon-purple); }
+
+.dim-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.dim-tag {
+  background: rgba(200, 180, 150, 0.08);
+  border: 1.5px solid rgba(180, 160, 120, 0.2);
+  border-radius: 8px 16px 8px 14px;
+  padding: 12px 14px;
+  text-align: center;
+  font-family: var(--font-song);
+  font-size: 0.78rem;
+}
+
+.dim-tag .dim-label {
+  color: var(--accent);
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+}
+.dim-tag .dim-desc {
+  color: var(--text-light);
+  font-size: 0.72rem;
+}
+
+.start-btn-wrap { text-align: center; }
+
+/* ============================================================
+   答题页
+   ============================================================ */
+.quiz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-family: var(--font-song);
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+
+.quiz-qnum {
+  font-family: var(--font-hand);
+  color: var(--accent);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+
+.quiz-status {
+  font-family: var(--font-song);
+  font-size: 0.75rem;
+}
+
+/* 进度条 — 日记本风格 */
+.quiz-progress-wrap {
+  background: rgba(200, 180, 150, 0.1);
+  border: 1px solid rgba(180, 160, 120, 0.2);
+  border-radius: 10px;
+  height: 12px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--crayon-orange), var(--accent));
+  border-radius: 10px;
+  transition: width 0.35s ease;
+}
+
+.quiz-progress-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-song);
+  font-size: 0.6rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+.quiz-question {
+  font-family: var(--font-song);
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.9;
+  padding: 14px 16px;
+  background: rgba(200, 180, 150, 0.06);
+  border-left: 3px solid var(--crayon-yellow);
+  border-radius: 2px 10px 10px 2px;
+}
+
+.quiz-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.quiz-back {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.15s;
+}
+.quiz-back:hover { color: var(--accent); }
+.quiz-back:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ============================================================
+   结果页
+   ============================================================ */
+.result-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.result-badge {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 0.72rem;
+  color: var(--crayon-yellow);
+  background: rgba(200, 170, 60, 0.08);
+  border: 1.5px solid rgba(200, 170, 60, 0.3);
+  border-radius: 12px;
+  padding: 4px 16px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.result-personality {
+  font-family: var(--font-hand);
+  font-size: 1.6rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.result-tagline {
+  font-family: var(--font-song);
+  font-size: 0.88rem;
+  color: var(--crayon-purple);
+  font-style: italic;
+}
+
+/* 维度分布条 */
+.result-dims { margin-bottom: 24px; }
+
+.dim-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.dim-name {
+  width: 65px;
+  text-align: right;
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.dim-bar-wrap {
+  flex: 1;
+  height: 16px;
+  background: rgba(200, 180, 150, 0.12);
+  border: 1px solid rgba(180, 160, 120, 0.15);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dim-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.8s ease;
+}
+
+.dim-bar-fill.dim-di   { background: linear-gradient(90deg, #d4869b, #e8a0b0); }
+.dim-bar-fill.dim-yuan { background: linear-gradient(90deg, #b89bc4, #d0b8d8); }
+.dim-bar-fill.dim-chi  { background: linear-gradient(90deg, #d4b860, #e8d080); }
+.dim-bar-fill.dim-yi   { background: linear-gradient(90deg, #7eb8c9, #a0d4e0); }
+
+.dim-label {
+  width: 40px;
+  font-family: var(--font-song);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* 解读卡片 */
+.result-interp {
+  background: rgba(200, 180, 150, 0.06);
+  border: 2px solid rgba(180, 160, 120, 0.18);
+  border-radius: 6px 16px 6px 14px;
+  padding: 22px;
+  margin-bottom: 20px;
+  line-height: 2;
+  font-family: var(--font-song);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.result-interp .motto {
+  display: block;
+  text-align: center;
+  color: var(--accent);
+  font-family: var(--font-hand);
+  font-size: 0.95rem;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(180, 160, 120, 0.25);
+  letter-spacing: 1px;
+}
+
+/* 音乐播放器区域 */
+.music-section {
+  margin-bottom: 20px;
+  padding: 16px 12px;
+  background: rgba(200, 180, 150, 0.04);
+  border: 1.5px solid rgba(180, 160, 120, 0.2);
+  border-radius: 6px 16px 6px 14px;
+  text-align: center;
+}
+
+.music-label {
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.music-player {
+  display: flex;
+  justify-content: center;
+}
+
+.music-player iframe {
+  max-width: 100%;
+}
+
+/* 操作按钮组 */
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ============================================================
+   分隔线
+   ============================================================ */
+.divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 6px;
+  margin: 18px 0;
+  user-select: none;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   完整16型人格弹出层
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(60, 40, 20, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-panel {
+  background: var(--paper);
+  border: 2.5px solid var(--crayon-brown);
+  border-radius: 8px 20px 8px 16px;
+  box-shadow:
+    4px 4px 0 var(--crayon-orange),
+    8px 8px 20px rgba(80, 50, 20, 0.25);
+  width: 100%;
+  max-width: 650px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 18px 22px 14px;
+  border-bottom: 1.5px solid rgba(180, 160, 120, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+
+.modal-close {
+  background: none;
+  border: 2px solid var(--text-muted);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-family: var(--font-song);
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.modal-body {
+  padding: 16px 22px 22px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.all-type-card {
+  background: var(--card-bg);
+  border: 1.5px solid rgba(180, 160, 120, 0.25);
+  border-radius: 4px 14px 4px 10px;
+  padding: 14px;
+  cursor: default;
+}
+
+.all-type-card .type-name {
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.all-type-card .type-tagline {
+  font-family: var(--font-song);
+  font-size: 0.7rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.all-type-card.current-type {
+  border-color: var(--accent);
+  background: rgba(200, 150, 100, 0.08);
+}
+
+.all-type-card.current-type::after {
+  content: '👈 你的结果';
+  display: block;
+  font-family: var(--font-hand);
+  font-size: 0.7rem;
+  color: var(--accent);
+  margin-top: 6px;
+  text-align: right;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   Toast 提示
+   ============================================================ */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--paper);
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  padding: 10px 24px;
+  border-radius: 16px 6px 16px 8px;
+  z-index: 9999;
+  pointer-events: none;
+  animation: toastIn 0.3s ease, toastOut 0.3s 1.5s ease forwards;
+  letter-spacing: 2px;
+}
+
+@keyframes toastIn  { from { opacity: 0; top: 0; } to { opacity: 1; top: 20px; } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ============================================================
+   响应式：平板 & 桌面
+   ============================================================ */
+@media (min-width: 768px) {
+  body { padding: 32px; align-items: center; }
+  #app { min-height: auto; }
+  .card { padding: 36px 30px; }
+  .start-title { font-size: 2rem; }
+  .quiz-question { font-size: 1.05rem; }
+  .option-btn { font-size: 0.95rem; }
+  .result-personality { font-size: 1.9rem; }
+}
+
+/* ============================================================
+   小屏适配
+   ============================================================ */
+@media (max-width: 480px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 360px) {
+  .card { padding: 18px 14px; }
+  .start-title { font-size: 1.3rem; }
+  .quiz-question { font-size: 0.85rem; }
+  .option-btn { font-size: 0.8rem; padding: 12px 14px; }
+  .dim-intro { grid-template-columns: 1fr; }
+  .result-personality { font-size: 1.2rem; }
+  .all-type-card { padding: 10px; }
+}
+</style>
+</head>
+<body>
+
+<main id="app"></main>
+
+<script>
+/* ============================================================
+   嗑CP人格属性测试 — JavaScript逻辑
+   日记本纸张风格 · 增量式更新防卡顿
+   ============================================================ */
+
+// ---------- 题目数据 ----------
+
+const QUESTIONS = [
+  {
+    text: '你关注的一对搭档，最近三个月没有任何公开互动。你现在的状态更接近？',
+    options: [
+      { label: '三个月？我已经换了两轮新人了，你说的是哪一对来着', scores: [0,0,0,3] },
+      { label: '把旧物料翻出来又看了一遍，依然能发现新细节，够我再续半年', scores: [3,0,0,0] },
+      { label: '有点焦虑，但默默在等下一次同框——只要来了我就还能继续', scores: [1,1,1,0] },
+      { label: '已经开始关注他们各自其他的搭档组合了，旧的不去新的不来', scores: [0,0,1,2] }
+    ]
+  },
+  {
+    text: '讨论区里绝大多数人都在嗑甲和丙，只有少数人觉得甲和乙才是真的。你心里觉得甲乙很特别。你会？',
+    options: [
+      { label: '也开始看看甲丙的内容——万一是我漏掉了什么呢', scores: [0,0,1,1] },
+      { label: '反而更上头了——别人嗑不到的那种微妙张力，恰恰说明甲乙的珍贵', scores: [0,3,0,0] },
+      { label: '甲乙和甲丙各有各的好，为什么不都嗑呢，又不是结婚只能选一个', scores: [0,0,0,3] },
+      { label: '暗戳戳对比甲乙和甲丙的互动证据，试图找到更多支撑自己直觉的论据', scores: [1,2,0,0] }
+    ]
+  },
+  {
+    text: '下面哪种互动方式最能让你由衷觉得"嗑到了"？',
+    options: [
+      { label: '一个人下意识帮另一个人挡开拥挤的人群，动作自然得像做过一千次', scores: [1,0,2,0] },
+      { label: '两个人各自和别人谈笑风生，但身体的朝向不自觉地指向对方', scores: [0,2,0,1] },
+      { label: '在所有人面前紧紧拥抱，没有一丝犹豫，眼神里只有彼此', scores: [0,0,3,0] },
+      { label: '全程零肢体接触，但隔着好几个人交换了一个极短的眼神，然后同时低头', scores: [2,1,0,0] }
+    ]
+  },
+  {
+    text: '同一个人，先后与不同搭档在不同作品里都产生了奇妙的化学反应。你的态度是？',
+    options: [
+      { label: '心里有一个最认可的——其他的不过是工作合作罢了', scores: [0,0,2,0] },
+      { label: '每一对都有独特的嗑点，全部收藏，快乐是可以叠加的', scores: [0,0,0,3] },
+      { label: '太多线了反而让我觉得哪一对都不够特别，逐渐失去兴趣', scores: [2,1,0,0] },
+      { label: '偏爱其中一对感受最强烈的，另外的当花絮看看就好', scores: [0,0,1,1] }
+    ]
+  },
+  {
+    text: '以下哪种比喻最接近你心目中"理想关系"的质地？',
+    options: [
+      { label: '炭火——不一定熊熊燃烧，但永远有余温，翻一翻又能亮起来', scores: [3,0,0,0] },
+      { label: '风——感受到了就伸手，抓不住就算了，反正还会再起风', scores: [0,0,0,3] },
+      { label: '淬火——烧到最烫然后极速冷却，定型了就永远不会变', scores: [1,0,2,0] },
+      { label: '潮水——来了又去去了又来，不用刻意维系，自有它的节律', scores: [0,2,0,1] }
+    ]
+  },
+  {
+    text: '你发现了一个很冷门的CP超话，里面只有几百个粉丝。逛了一圈觉得有点意思。你会？',
+    options: [
+      { label: '逛完就忘了，下次刷到可能已经认不出来这是什么了', scores: [0,0,0,3] },
+      { label: '觉得有点意思就关注了，偶尔刷到就看看更新', scores: [0,1,0,1] },
+      { label: '开始疯狂考古，把超话里每一条帖子都翻完了，意犹未尽', scores: [2,1,0,0] },
+      { label: '人太少了产出太少了，先收藏着，等火起来了再来', scores: [0,0,2,0] }
+    ]
+  },
+  {
+    text: '你觉得两个人之间最动人的状态是？',
+    options: [
+      { label: '即使全世界都看不懂，只有他们两个人彼此心知肚明就足够了', scores: [0,2,1,0] },
+      { label: '爱意炽热到根本藏不住，从每个毛孔往外冒，全世界都看得出来', scores: [0,0,3,0] },
+      { label: '无所谓动人不动人，嗑个乐子罢了，别太认真', scores: [0,0,0,3] },
+      { label: '表面平静但底下暗流涌动，全是没说出口但彼此都懂的故事', scores: [2,1,0,0] }
+    ]
+  },
+  {
+    text: '你嗑的CP中的一方传出了和其他人的绯闻（未官宣、无实锤）。你的第一反应是？',
+    options: [
+      { label: '有点慌，赶紧去翻自己CP最近的互动确认一下，需要定心丸', scores: [0,0,2,1] },
+      { label: '完了完了我的CP是不是be了——但第二天就忘了，开始嗑新的', scores: [0,0,0,3] },
+      { label: '不信谣不传谣，我嗑的CP根基在那摆着，一个绯闻动摇不了什么', scores: [3,0,0,0] },
+      { label: '绯闻对象看着也不错……要不顺便也嗑一口？又不是只能嗑一对', scores: [0,1,0,2] }
+    ]
+  },
+  {
+    text: '你的好朋友对你嗑的CP完全不感兴趣，甚至觉得你有点硬嗑。你会？',
+    options: [
+      { label: '立刻换一个朋友也在嗑的CP来聊，社交嗑CP两不耽误', scores: [0,0,0,3] },
+      { label: '没关系，你们不懂，我一个人也能嗑得很开心很投入', scores: [0,3,0,0] },
+      { label: '有点沮丧，开始有点动摇，怀疑自己是不是真的在硬嗑', scores: [0,0,2,0] },
+      { label: '试图安利了一下但失败了，算了彼此尊重，不强求', scores: [1,1,0,1] }
+    ]
+  },
+  {
+    text: '你现在同时在追/在嗑几对CP（包括剧中角色和真人）？',
+    options: [
+      { label: '一两对，而且已经嗑了很久了，是我的精神支柱和生活调剂', scores: [2,0,1,0] },
+      { label: '五六对吧大概，没仔细数过，看到好嗑的就加入收藏夹', scores: [0,1,0,2] },
+      { label: '数不清了，每天都有新的被安利，像开着CP自助餐一样', scores: [0,0,0,3] },
+      { label: '主要一两对，偶尔看看别的，但心里的主位是明确的', scores: [0,1,2,0] }
+    ]
+  },
+  {
+    text: '如果可以选择，你希望你嗑的CP的互动频率是？',
+    options: [
+      { label: '不要太频繁，太频繁反而显得营业感重，稀有的互动才是真的', scores: [1,2,0,0] },
+      { label: '每天都有新糖，越多越好，我的心脏承受得住，请尽情来', scores: [0,0,3,0] },
+      { label: '不用天天发，但每次互动都要有分量，一颗好糖够我嗑一个月', scores: [2,0,1,0] },
+      { label: '随缘吧，他们有互动就嗑，没有就干别的，生活又不是只有嗑CP', scores: [0,0,0,2] }
+    ]
+  },
+  {
+    text: '你嗑的一对CP，两个当事人各自都有更"大势"的其他配对。你会？',
+    options: [
+      { label: '虽然人少但圈内氛围好，精准嗑糖比盲目跟风有意义得多', scores: [1,2,0,0] },
+      { label: '大势CP确实也好嗑啊，两者不冲突，我都嗑，快乐加倍', scores: [0,0,0,3] },
+      { label: '那些大势CP才是营业，我嗑的这对私下互动的含金量明显更高', scores: [0,3,0,0] },
+      { label: '有点羡慕大势CP的粮仓……偷偷去蹭过几口饭，确实也挺香的', scores: [0,0,1,2] }
+    ]
+  },
+  {
+    text: '刷到一个CP向剪辑视频，标题写着"这都不真我倒立洗头"。你的反应是？',
+    options: [
+      { label: '好嗑！收藏了！然后果断去刷下一个视频了，库存还很多', scores: [0,0,0,2] },
+      { label: '点进去看完，一键三连，火速转发——这都不真那什么是真的', scores: [0,0,3,0] },
+      { label: '看完觉得一般，这个标题党了，货不对板，剪辑也不行', scores: [1,0,1,0] },
+      { label: '看完觉得有点意思，但冷静——剪辑是可以制造幻觉的，不能全信', scores: [1,1,0,0] }
+    ]
+  },
+  {
+    text: '你CP中的一个人发了一句可以被解读为"糖"的模糊动态。你会？',
+    options: [
+      { label: '觉得挺甜的但保持理性——不排除是自己过度解读了', scores: [0,1,0,1] },
+      { label: '看到了，随手点了个赞，划过去了，没想太多', scores: [0,0,0,2] },
+      { label: '截图存档，补充进专属时间线文档，这就是证据链中新的一环', scores: [3,0,0,0] },
+      { label: '和同好兴奋讨论了一整晚，从各种角度逐字分析，越嗑越真', scores: [0,0,2,0] }
+    ]
+  },
+  {
+    text: '你怎么看待CP之间的"避嫌期"？',
+    options: [
+      { label: '避嫌就避嫌呗，我去嗑别的不避嫌的不就完了，又不是只有一对', scores: [0,0,0,3] },
+      { label: '理解工作需要，但私心希望他们赶紧结束避嫌期，我急需明糖', scores: [0,0,2,0] },
+      { label: '避嫌才是最好嗑的！不敢看对方才是心里有鬼——只恨一个人和只爱一个人，有什么区别？越避越真。', scores: [0,2,1,0] },
+      { label: '避嫌期太长会让我有点累……我需要一些明面上的互动来续命', scores: [1,0,2,0] }
+    ]
+  },
+  {
+    text: '看完一部让你很上头的剧或综艺之后，你通常会？',
+    options: [
+      { label: '嗑上剧中CP，但剧播完一两个月后热情就慢慢淡了，自然冷却', scores: [0,0,1,1] },
+      { label: '剧还没播完已经嗑了好几对排列组合了，现在已经在追下一部了', scores: [0,0,0,3] },
+      { label: '嗑上剧中CP，开始考古两人的前世今生和各种物料，能嗑很久', scores: [2,0,1,0] },
+      { label: '嗑了一段时间，然后被下一部剧的新CP自然吸引走了，无缝衔接', scores: [0,0,0,2] }
+    ]
+  },
+  {
+    text: '如果要用一个词形容你作为CP粉的状态，最接近的是？',
+    options: [
+      { label: '博爱——什么都能嗑，什么都好嗑，嗑到一口就是赚到，不挑食', scores: [0,1,0,2] },
+      { label: '坚定——风浪再大我自岿然不动，我嗑的就是真的，时间会证明', scores: [3,0,0,0] },
+      { label: '平和——有糖就吃没糖就等，不急不躁，不内耗不强求', scores: [1,2,0,0] },
+      { label: '沉浸——全身心投入，每一对嗑的时候都是拿出了全部真心的', scores: [0,0,2,1] }
+    ]
+  },
+  {
+    text: '你更想看到你的CP之间呈现怎样的状态？',
+    options: [
+      { label: '无所谓什么模式，有互动就行，我不挑食的', scores: [0,0,0,2] },
+      { label: '克制的、隐忍的、只有两个人自己才能读懂的暗号和默契', scores: [1,2,0,0] },
+      { label: '张扬的、热烈的、恨不得昭告全天下的毫不掩饰的偏爱', scores: [0,0,3,0] },
+      { label: '松弛的、自然的、不刻意不营业的真实的日常相处', scores: [2,0,0,1] }
+    ]
+  },
+  {
+    text: '如果有人当着你的面说"你嗑的那对CP根本就是假的"——',
+    options: [
+      { label: '认真摆证据讲道理——我的时间线和截图可不是白整理的', scores: [2,0,1,0] },
+      { label: '真的假的有什么关系？我嗑的是情绪价值，又不是去民政局登记', scores: [0,0,0,3] },
+      { label: '笑死，他们看什么都假，是他们自己没有那个福气罢了', scores: [0,2,1,0] },
+      { label: '"对对对你说的都对"（内心OS：懒得跟你解释，你懂什么）', scores: [0,1,0,1] }
+    ]
+  },
+  {
+    text: '回顾你的嗑CP生涯，你最大的感慨是？',
+    options: [
+      { label: '每一对真心嗑过的都在心里留下了印记，没有一对是白嗑的', scores: [2,2,0,0] },
+      { label: '嗑过太多了有些都记不太清了，但每一段都提供了当时的情绪价值', scores: [0,0,0,2] },
+      { label: '轰轰烈烈地嗑过几对，每一段都是全情投入奋不顾身的燃烧', scores: [0,0,2,1] },
+      { label: '主打一个随缘，来过爱过走过，不留遗憾也不留执念', scores: [0,0,0,3] }
+    ]
+  }
+];
+
+// ---------- 16种人格定义 ----------
+
+const PERSONALITIES = {
+  'HHHH': {
+    name: '全自动嗑糖机',
+    tagline: '不挑食，不挑人，不停机，糖分转化率99.7%',
+    desc: '你是一台无需维护的永动机。热圈冷圈、官配拉郎、甜的虐的、真的假的——来者不拒，万物皆可嗑。你的嗑糖消化系统极其发达，任何物料丢进去都能转化成高质量情绪价值。别人小心翼翼地问"这对是真的吗？"你反手就是一个"真的假的有什么关系？好嗑就完了。"你的存在本身就是CP多元宇宙的有力证明。',
+    motto: '「好嗑就完了，哪来那么多真的假的。」',
+    song: { name: '恋爱循环', artist: '花泽香菜', id: '5799542' }
+  },
+  'HHHL': {
+    name: '冷圈非物质文化遗产继承人',
+    tagline: '别人都跑了我还在，这个圈的族谱只剩我一人',
+    desc: '你嗑的CP超话排名常年三百开外，签到人数不到三位数——但你是那个雷打不动每天发帖打卡的人。别人劝你换个热圈躺平吃粮，你说这不叫人少，这叫"精准受众"。你很可能是这个圈最后一个活粉了。你不走不是因为走不了，是因为你走了这个圈就真的失传了。联合国教科文组织应该给你发个证书。',
+    motto: '「人少怎么了，人少说明我们都是识货的。」',
+    song: { name: '体面', artist: '于文文', id: '5284789' }
+  },
+  'HHLH': {
+    name: '糖分考古学家',
+    tagline: '拿着微博高级搜索铲，发掘2019年的糖矿遗址',
+    desc: '你的手里有一把无形的考古铲，能在数字废墟里挖出别人早就遗忘的陈年旧糖。同款衣服？三年前的照片你归档了。采访里的暗指？你写了万字逐帧分析。别人在嗑新鲜出炉的热糖，你在品陈年老酿——越陈越香，越品越有味道。你坚信：被时间埋没的糖才是真金，能被一眼看穿的都叫营业。',
+    motto: '「给我一个模糊的同款，我还你一部断代史。」',
+    song: { name: '挚友', artist: '周兴哲', id: '2049541052' }
+  },
+  'HHLL': {
+    name: '糖水兑酒品鉴师',
+    tagline: '1滴糖+9升水，窖藏五年，入口就是82年拉菲',
+    desc: '你的座右铭是"一滴糖兑九升水，窖藏五年就是八二年拉菲"。在别人眼里微不足道的互动——穿同色系的衣服、微博发在同一分钟、甚至只是同一天出现在同一座城市——在你这里就是满汉全席。你擅长在匮乏中创造富足，在荒漠里看见绿洲。有人说你在硬嗑，你微微一笑："这不叫硬嗑，这叫深度品鉴，你们味蕾还没进化到这个层次。"',
+    motto: '「不是糖少，是你的阈值还不够低。」',
+    song: { name: '微醺', artist: '颜人中', id: '' }
+  },
+  'HLHH': {
+    name: 'CP热度游牧民族',
+    tagline: '逐水草而居，哪家粮仓满了就赶着帐篷去',
+    desc: '你是嗑CP界的游牧民族。逐水草而居——哪家CP的粮仓丰收了，你就赶着帐篷搬过去。每一片草场你都真诚地爱过，在这里度过了快乐的时光，但草吃完了就自然迁徙到下一个牧场。你不觉得这有什么问题——游牧是一种生存智慧，定居才是不自然的。你的关注列表拉开来就是一部CP热度迁徙路线图。',
+    motto: '「每一对都是真心嗑的，只是真心有时效性。」',
+    song: { name: '走马', artist: '陈粒', id: '30466670' }
+  },
+  'HLHL': {
+    name: '官配原教旨主义者',
+    tagline: '没官宣？不存在的。不熟的同事罢了。',
+    desc: '你的世界观里只有那一对天选之人。所有其他配对在你眼里要么是"不熟的同事"，要么是"商业合作需要"，要么是"剪辑up主的诈骗行为"。你的CP就算三年没有同框，你也坚定不移地相信他们在秘密交往。有人问证据呢——"没有证据就是最大的证据，不然为什么要避嫌？避嫌才是真的。"你的终极目标：亲手把他们按进民政局。',
+    motto: '「按头也要按进民政局，民政局今天不上班我明天再来。」',
+    song: { name: '将故事写成我们', artist: '林俊杰', id: '1393381176' }
+  },
+  'HLLH': {
+    name: '极简主义嗑学家',
+    tagline: '一个眼神=满汉全席，一个同款=婚礼请柬，less is more',
+    desc: '一个眼神在你眼里就是满汉全席。一次同款就是婚礼请柬。同一天发微博就是官宣文案。你不追求铺天盖地的工业糖精，你追求的是那种"less is more"的高级审美。别人看不出来的细微互动，你津津有味地品了三年。你并不觉得这是过度解读——你管这叫"审美能力"，是一种天赋，一般人没有。',
+    motto: '「给我一个像素，我能脑补出整部爱情电影。」',
+    song: { name: '小幸运', artist: '田馥甄', id: '410043' }
+  },
+  'HLLL': {
+    name: '卡点糖破译专家',
+    tagline: '11:11、22:22、生日当天发微博——我已经破译了，只有我懂',
+    desc: '十一点十一分发的微博、二十二点二十二分的上线记录、对方生日当天发的一条看似完全无关的动态——这些在普通人眼里毫无意义的时间数字，在你看来是宇宙传递给真CP粉的加密电文。你相信数字不会说谎，时间是唯一的密码本。别人觉得你走火入魔了，你觉得他们不懂密码学。你的手机备忘录里有一个加密的时间线表格，记录着每一个可疑节点。FBI真的应该来挖你。',
+    motto: '「这不是巧合，这是用时间写的摩斯密码。」',
+    song: { name: '数字恋爱', artist: '范晓萱', id: '230257' }
+  },
+  'LHHH': {
+    name: '急性糖分缺乏症患者',
+    tagline: '距离上次发糖已过去6小时——红色警报，启动全网搜索',
+    desc: '距离上一次发糖已经过去了整整六个小时——红色警报！立刻启动全网搜索模式！你无法忍受长时间的糖分真空状态，需要持续不断的新互动来维持心跳频率。避嫌期对你来说就是戒断反应的代名词，每一秒都是煎熬。你的同好群经常凌晨三点还在高强度活跃，因为——"万一他们半夜突然发了什么呢？不能错过！"',
+    motto: '「6小时没发糖？那我默认他们已经在民政局排队了。」',
+    song: { name: '缺氧', artist: '安苏羽', id: '521602388' }
+  },
+  'LHHL': {
+    name: '冷圈自产粮扶贫办主任',
+    tagline: '正主不营业？没关系。我来写文，我来剪视频，我来养活这个家。',
+    desc: '什么？正主不营业？没关系，我来。同框太少？没关系，我剪。圈子里没人写文？你的长篇同人文已经悄无声息地更新到了第四十七章。你觉得冷圈也有冷圈的骨气和尊严——人少可以，但产出不能输。你一个人撑起了一个圈的GDP总量，你既是这个圈的第一产业（写文画图）、第二产业（剪辑修图）和第三产业（翻译搬运整理）。你是这个圈的经济特区。',
+    motto: '「一个人就是一支军队，一个人就是一个产业链。」',
+    song: { name: '孤勇者', artist: '陈奕迅', id: '1901371647' }
+  },
+  'LLHL': {
+    name: '赛博野菜采集员',
+    tagline: '在互联网荒野上漫游，看到什么嗑什么，不挑食但也不记路',
+    desc: '你在互联网的无边荒野上漫无目的地游荡着，看到什么嗑什么。不挑食，不记路，不存档。今天嗑了一对很甜的，明天可能连名字都想不起来了。但你觉得这样特别好——野菜嘛，吃到了就是赚到了，哪有把野菜挖回来种在菜园子里天天浇水的道理？你的嗑糖史本质上就是一部互联网随机漫步史。',
+    motto: '「野菜不挑，嗑到就是赚到，谁还记得昨天吃了什么。」',
+    song: { name: '想去海边', artist: '夏日入侵企画', id: '1481169787' }
+  },
+  'LLLH': {
+    name: '显微镜精（成精备案号2026-007）',
+    tagline: '能通过墨镜反光里的两个像素辨认出对面站的是谁，官方已备案',
+    desc: '你能通过墨镜反光里两个像素点的色值辨认出对面站的人是谁。你能从一张座机画质的大合照背景虚化中推算出地理位置。你能逐帧对比两个人的机场穿搭确认他们穿了同一个品牌的不同颜色——等等，这就是糖！你的分析报告写出来比某些学术论文的参考文献还长。国家自然科学基金委应该考虑给你立个项。',
+    motto: '「给我一张高糊合照，我还你一篇学术论文。」',
+    song: { name: '看得最远的地方', artist: '张韶涵', id: '186009' }
+  },
+  'LHLH': {
+    name: '热搜CP轮值体验官',
+    tagline: '新CP上热搜=我上班，下周换岗，每对都是真心，每对都不超过七天',
+    desc: '新CP登上热搜就是你上班的闹钟。你的工作周期通常是一周到一个月，到期自动轮岗，和下一任做好情绪交接。每一任CP你都付出了真心实意——嗑的时候是真的爱，离职的时候也是真的洒脱。你的简历上赫然写着"经验丰富，累计嗑过不下五十对CP"。有人说你花心，你正色道："这叫职业素养，轮值制度是成熟的管理模式。"',
+    motto: '「我的真心是真情实感的真心，只是保质期比较短。」',
+    song: { name: '说散就散', artist: 'JC', id: '461347998' }
+  },
+  'LHLL': {
+    name: '美帝CP终身VIP',
+    tagline: '买了终身会员，不退费不转让，这座山头我死磕到底',
+    desc: '你只嗑最火的。不是因为你跟风，是因为火有火的道理——那么多双眼睛都看出来的化学反应，那才是经得起检验的化学反应。你的CP是公认的"美帝"级别，糖多到堆成山粮仓满到往外溢。你办的是终身VIP卡，不退费、不转让、不降级。别的CP再火也动摇不了你。这座山头你准备死磕到底，生是这座山的人，死是这座山的鬼。',
+    motto: '「大势怎么了？大势是因为真的好嗑才大势的。」',
+    song: { name: '不死之身', artist: '林俊杰', id: '4874469' }
+  },
+  'LLHH': {
+    name: '嗑学气氛组在编人员',
+    tagline: '"好嗑！""好甜！""这是真的！"——其实名字都没记住，不重要',
+    desc: '"啊啊啊好嗑！""好甜好甜！""这是真的吧！！！"——你活跃在每一个CP帖子的评论区里，准时打卡，热情洋溢。但其实吧……你连这两个人叫什么名字都还没记住。不过这不重要。重要的是氛围到了，情绪到了，热度和流量贡献到了。你是CP社区的基础设施，是氛围感的核心生产力和第一推动力。没有你这样的气氛组，整个嗑CP生态都将失去灵魂。',
+    motto: '「虽然记不住名字，但我嗑的每一口都是真心的！」',
+    song: { name: '好甜', artist: '音阙诗听', id: '' }
+	  },
+	  'LLLL': {
+    name: '未激活嗑糖帐号',
+    tagline: '在旁边看着，不参与，不拒绝，不主动——但也没有卸载',
+    desc: '你在旁边安安静静地看着朋友们每天为CP发疯。你不参与——懒得打榜做数据；不拒绝——偶尔也觉得"嗯这一对确实有点感觉"；不主动——下一秒就忘了去搜关键词了。你的嗑糖帐号处于一种神秘的量子叠加态：它既存在又不存在。也许某一天会被某个瞬间猛然激活，也许永远不会。但无论如何，你是一个温柔而平和的旁观者。这就够了。',
+    motto: '「我只是还没遇到让我激活的那一对——也可能永远不会遇到。」',
+    song: { name: '演员', artist: '薛之谦', id: '32507038' }
+  }
+};
+
+// 维度信息
+const DIM_NAMES = ['坚韧', '包容', '上进', '随性'];
+const DIM_KEYS  = ['砥', '渊', '炽', '逸'];
+
+// ---------- 状态管理 ----------
+
+const state = {
+  screen: 'start',
+  currentQ: 0,
+  answers: new Array(20).fill(null),
+  scores: [0, 0, 0, 0]
+};
+
+const app = document.getElementById('app');
+
+// ---------- 工具函数 ----------
+
+function computeMaxScores() {
+  const maxes = [0, 0, 0, 0];
+  QUESTIONS.forEach(q => {
+    q.options.forEach(opt => {
+      for (let i = 0; i < 4; i++) {
+        if (opt.scores[i] > maxes[i]) maxes[i] = opt.scores[i];
+      }
+    });
+  });
+  return maxes.map(m => m * 20);
+}
+
+function recalcScores() {
+  state.scores = [0, 0, 0, 0];
+  state.answers.forEach((ansIdx, qIdx) => {
+    if (ansIdx !== null) {
+      const optScores = QUESTIONS[qIdx].options[ansIdx].scores;
+      for (let i = 0; i < 4; i++) {
+        state.scores[i] += optScores[i];
+      }
+    }
+  });
+}
+
+function getPersonalityKey() {
+  const [砥, 渊, 炽, 逸] = state.scores;
+  const maxScores = computeMaxScores();
+  // 阈值设为最大分的35%，与renderResult保持一致
+  const thresholds = maxScores.map(m => Math.ceil(m * 0.35));
+  return [
+    砥 >= thresholds[0] ? 'H' : 'L',
+    渊 >= thresholds[1] ? 'H' : 'L',
+    炽 >= thresholds[2] ? 'H' : 'L',
+    逸 >= thresholds[3] ? 'H' : 'L'
+  ].join('');
+}
+
+// ---------- 页面渲染（全量，仅用于页面切换） ----------
+
+function render() {
+  switch (state.screen) {
+    case 'start':  renderStart();  break;
+    case 'quiz':   renderQuiz();   break;
+    case 'result': renderResult(); break;
+  }
+}
+
+// ---------- 首页 ----------
+
+function renderStart() {
+  app.innerHTML = `
+    <div class="screen active" id="start-screen">
+      <div class="card">
+        <div class="start-header">
+          <span class="start-icon">🫧</span>
+          <h1 class="start-title">嗑CP人格属性测试</h1>
+          <p class="start-subtitle">—— 测测你是哪种嗑学家 ——</p>
+        </div>
+
+        <div class="divider">· ◈ ·</div>
+
+        <p class="start-desc">
+          本测试基于<strong>四个维度</strong>分析你的嗑CP行为模式：<br>
+          <span class="highlight">坚韧</span> · <span class="highlight">包容</span> · <span class="highlight">上进</span> · <span class="highlight">随性</span>
+        </p>
+
+        <div class="dim-intro">
+          <div class="dim-tag">
+            <span class="dim-label">🪨 坚韧</span><br>
+            <span class="dim-desc">糖少也能硬嗑，断头饭也吃得香</span>
+          </div>
+          <div class="dim-tag">
+            <span class="dim-label">🌊 包容</span><br>
+            <span class="dim-desc">嗑冷门也坚信自己CP最真</span>
+          </div>
+          <div class="dim-tag">
+            <span class="dim-label">🔥 上进</span><br>
+            <span class="dim-desc">追求深切浓烈，嗑不来淡淡的</span>
+          </div>
+          <div class="dim-tag">
+            <span class="dim-label">🍃 随性</span><br>
+            <span class="dim-desc">嗑到就嗑没糖就走，只要情绪价值</span>
+          </div>
+        </div>
+
+        <p class="start-desc">
+          共 <strong>20</strong> 道题，每题4个选项<br>
+          选出<strong>最接近你真实想法</strong>的那个<br>
+          看看你会被分到哪种<strong>嗑CP人格</strong>
+        </p>
+
+        <div class="divider">· ◈ ·</div>
+
+        <div class="start-btn-wrap">
+          <button class="btn-primary" onclick="startQuiz()">
+            ✦ 开始测试
+          </button>
+        </div>
+
+        <div class="divider">· ◈ ·</div>
+
+        <div style="text-align:center;font-family:var(--font-song);font-size:0.7rem;color:var(--text-muted);">
+          📊 已有 <strong id="visit-count" style="color:var(--accent);">...</strong> 位嗑学家完成了测试
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 答题页 ----------
+
+function renderQuiz() {
+  const q = QUESTIONS[state.currentQ];
+  const answered = state.answers[state.currentQ];
+  const progress = ((state.currentQ + 1) / 20) * 100;
+
+  let optionsHTML = q.options.map((opt, i) => {
+    const selClass = (answered === i) ? ' selected' : '';
+    return `
+      <button class="option-btn${selClass}" onclick="selectAnswer(${i})" id="opt-btn-${i}">
+        <span class="option-label">${String.fromCharCode(65 + i)}.</span>${opt.label}
+      </button>
+    `;
+  }).join('');
+
+  const isLast = state.currentQ >= 19;
+
+  app.innerHTML = `
+    <div class="screen active" id="quiz-screen">
+      <div class="card">
+        <div class="quiz-header">
+          <span class="quiz-qnum">Q${state.currentQ + 1} / 20</span>
+          <span class="quiz-status">${answered !== null ? '✅ 已答' : '⏳ 未答'}</span>
+        </div>
+
+        <div class="quiz-progress-wrap">
+          <div class="quiz-progress-fill" style="width:${progress}%;"></div>
+          <div class="quiz-progress-text">${Math.round(progress)}%</div>
+        </div>
+
+        <div class="quiz-question">
+          ${q.text}
+        </div>
+
+        ${optionsHTML}
+
+        <div class="quiz-nav">
+          <button class="quiz-back"
+            ${state.currentQ === 0 ? 'disabled' : ''}
+            onclick="prevQuestion()">
+            ◀ 上一题
+          </button>
+          <span style="font-family:var(--font-song);font-size:0.72rem;color:var(--text-muted);">
+            ${state.currentQ + 1} / 20
+          </span>
+          <button class="btn-secondary" id="next-btn"
+            ${answered === null ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}
+            onclick="nextQuestion()">
+            ${isLast ? '查看结果 ✦' : '下一题 ▶'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 增量更新选项（防卡顿核心：选答案不重渲染整个页面） ----------
+
+function updateQuizAnswerUI(optIdx) {
+  // 更新所有选项按钮的选中状态
+  for (let i = 0; i < 4; i++) {
+    const btn = document.getElementById('opt-btn-' + i);
+    if (btn) {
+      btn.classList.toggle('selected', i === optIdx);
+    }
+  }
+  // 更新状态文字
+  const statusEl = document.querySelector('#quiz-screen .quiz-status');
+  if (statusEl) statusEl.textContent = '✅ 已答';
+  // 启用"下一题"按钮
+  const nextBtn = document.getElementById('next-btn');
+  if (nextBtn) {
+    nextBtn.disabled = false;
+    nextBtn.style.opacity = '1';
+    nextBtn.style.cursor = 'pointer';
+  }
+}
+
+// ---------- 结果页 ----------
+
+function renderResult() {
+  const [砥, 渊, 炽, 逸] = state.scores;
+  const maxScores = computeMaxScores();
+  // 阈值设为最大分的35%，只有远低于平均水平才算L，使"未激活"等全L型极为罕见
+  const thresholds = maxScores.map(m => Math.ceil(m * 0.35));
+  const hls = [
+    砥 >= thresholds[0] ? 'H' : 'L',
+    渊 >= thresholds[1] ? 'H' : 'L',
+    炽 >= thresholds[2] ? 'H' : 'L',
+    逸 >= thresholds[3] ? 'H' : 'L'
+  ];
+  const key = hls.join('');
+  const personality = PERSONALITIES[key];
+
+  const dimScores = [砥, 渊, 炽, 逸];
+  const dimCSS = ['dim-di', 'dim-yuan', 'dim-chi', 'dim-yi'];
+  const dimEmoji = ['🪨', '🌊', '🔥', '🍃'];
+
+  let dimsHTML = dimScores.map((score, i) => {
+    const pct = Math.min(100, Math.round((score / maxScores[i]) * 100));
+    return `
+      <div class="dim-row">
+        <span class="dim-name">${dimEmoji[i]} ${DIM_NAMES[i]}</span>
+        <div class="dim-bar-wrap">
+          <div class="dim-bar-fill ${dimCSS[i]}" style="width:${pct}%;"></div>
+        </div>
+        <span class="dim-label" style="color:${hls[i] === 'H' ? 'var(--accent)' : 'var(--text-muted)'};">
+          ${hls[i] === 'H' ? '▲ 高' : '▽ 低'}
+        </span>
+      </div>
+    `;
+  }).join('');
+
+  // 音乐播放器 + 网易云直达链接
+  const song = personality.song;
+  const hasSongId = song && song.id && song.id.length > 0;
+  const directUrl = hasSongId ? `https://music.163.com/#/song?id=${song.id}` : '';
+  const searchUrl = song ? `https://music.163.com/#/search/m/?s=${encodeURIComponent(song.name + ' ' + song.artist)}` : '';
+  const musicHTML = song ? `
+    <div class="music-section">
+      <div class="music-label">🎵 ${personality.name}的主题曲 · ${song.name} — ${song.artist}</div>
+      ${hasSongId ? `
+      <div class="music-player">
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0"
+          width="100%" height="86"
+          src="https://music.163.com/outchain/player?type=2&id=${song.id}&auto=0&height=66">
+        </iframe>
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <a href="${directUrl}" target="_blank" rel="noopener"
+           style="display:inline-block;font-family:var(--font-hand);font-size:0.85rem;color:#fffef7;background:var(--crayon-brown);text-decoration:none;padding:8px 24px;border-radius:16px 8px 18px 10px;letter-spacing:2px;box-shadow:2px 2px 0 rgba(160,120,80,0.3);transition:all 0.12s;">
+          🎧 在网易云音乐中打开
+        </a>
+      </div>
+      ` : `
+      <div style="text-align:center;padding:8px;font-family:var(--font-song);font-size:0.75rem;color:var(--text-muted);">
+        ⚠️ 该歌曲暂未收录于网易云曲库
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <a href="${searchUrl}" target="_blank" rel="noopener"
+           style="display:inline-block;font-family:var(--font-hand);font-size:0.8rem;color:var(--text-light);text-decoration:none;padding:6px 18px;border:1.5px solid var(--text-muted);border-radius:14px 6px 16px 8px;letter-spacing:1px;">
+          🔍 在网易云音乐中搜索
+        </a>
+      </div>
+      `}
+    </div>
+  ` : '';
+
+  app.innerHTML = `
+    <div class="screen active" id="result-screen">
+      <div class="card">
+        <div class="result-header">
+          <div class="result-badge">YOUR CP PERSONALITY</div>
+          <h2 class="result-personality">${personality.name}</h2>
+          <p class="result-tagline">「${personality.tagline}」</p>
+        </div>
+
+        <div class="divider">· ◈ · ◈ ·</div>
+
+        <div class="result-dims">
+          ${dimsHTML}
+        </div>
+
+        <div class="divider">· ◈ · ◈ ·</div>
+
+        <div class="result-interp">
+          <p>${personality.desc}</p>
+          <span class="motto">${personality.motto}</span>
+        </div>
+
+        ${musicHTML}
+
+        <div class="result-actions">
+          <button class="btn-primary" onclick="showAllTypes()">
+            📖 查看完整16型人格
+          </button>
+          <button class="btn-secondary" onclick="retakeTest()">
+            🔄 重新测试
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- 完整16型人格弹出层 ----------
+
+function showAllTypes() {
+  const currentKey = getPersonalityKey();
+
+  // 按顺序生成所有类型卡片
+  const allKeys = [
+    'HHHH','HHHL','HHLH','HHLL',
+    'HLHH','HLHL','HLLH','HLLL',
+    'LHHH','LHHL','LHLH','LHLL',
+    'LLHH','LLHL','LLLH','LLLL'
+  ];
+
+  let cardsHTML = allKeys.map(key => {
+    const p = PERSONALITIES[key];
+    if (!p) return '';
+    const isCurrent = (key === currentKey);
+    return `
+      <div class="all-type-card${isCurrent ? ' current-type' : ''}">
+        <div class="type-name">${p.name}</div>
+        <div class="type-tagline">「${p.tagline}」</div>
+      </div>
+    `;
+  }).join('');
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'all-types-modal';
+  modal.innerHTML = `
+    <div class="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title">📖 完整16型嗑CP人格图鉴</span>
+        <button class="modal-close" onclick="closeAllTypes()">✕</button>
+      </div>
+      <div class="modal-body">
+        ${cardsHTML}
+      </div>
+    </div>
+  `;
+
+  // 点击遮罩关闭
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) closeAllTypes();
+  });
+
+  document.body.appendChild(modal);
+  // 防止背景滚动
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAllTypes() {
+  const modal = document.getElementById('all-types-modal');
+  if (modal) modal.remove();
+  document.body.style.overflow = '';
+}
+
+// ---------- 用户操作 ----------
+
+function startQuiz() {
+  state.screen = 'quiz';
+  state.currentQ = 0;
+  state.answers = new Array(20).fill(null);
+  state.scores = [0, 0, 0, 0];
+  render();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+function selectAnswer(optIdx) {
+  if (state.answers[state.currentQ] === optIdx) return; // 相同选项不重复操作
+  state.answers[state.currentQ] = optIdx;
+  recalcScores();
+  // ★ 增量更新DOM，不重渲染整个页面，消除卡顿
+  updateQuizAnswerUI(optIdx);
+}
+
+function prevQuestion() {
+  if (state.currentQ > 0) {
+    state.currentQ--;
+    render();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+}
+
+function nextQuestion() {
+  if (state.answers[state.currentQ] === null) return;
+  if (state.currentQ < 19) {
+    state.currentQ++;
+    render();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  } else {
+    state.screen = 'result';
+    render();
+    incrementVisitCount();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+}
+
+function retakeTest() {
+  state.screen = 'start';
+  state.currentQ = 0;
+  state.answers = new Array(20).fill(null);
+  state.scores = [0, 0, 0, 0];
+  render();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ---------- Toast 提示 ----------
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+  }, 2000);
+}
+
+// ---------- 键盘快捷键 ----------
+
+document.addEventListener('keydown', (e) => {
+  // 如果弹出层打开，ESC关闭
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('all-types-modal');
+    if (modal) { closeAllTypes(); return; }
+  }
+
+  if (state.screen !== 'quiz') return;
+  const key = e.key.toUpperCase();
+  if (['A', 'B', 'C', 'D'].includes(key)) {
+    selectAnswer(key.charCodeAt(0) - 65);
+  }
+  if (key === 'ENTER') {
+    e.preventDefault();
+    nextQuestion();
+  }
+  if (key === 'BACKSPACE' || key === 'ARROWLEFT') {
+    e.preventDefault();
+    prevQuestion();
+  }
+});
+
+// ---------- 访问计数 ----------
+
+const COUNTER_NS = 'cp-personality-test';
+const COUNTER_KEY = 'completed-tests';
+const COUNTER_API = `https://api.countapi.xyz`;
+
+function updateVisitCount() {
+  const el = document.getElementById('visit-count');
+  if (!el) return;
+  fetch(`${COUNTER_API}/get/${COUNTER_NS}/${COUNTER_KEY}`)
+    .then(r => r.json())
+    .then(data => { el.textContent = data.value || 0; })
+    .catch(() => { el.textContent = '许多'; });
+}
+
+function incrementVisitCount() {
+  fetch(`${COUNTER_API}/hit/${COUNTER_NS}/${COUNTER_KEY}`)
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById('visit-count');
+      if (el) el.textContent = data.value;
+    })
+    .catch(() => {});
+}
+
+// 页面加载时获取当前计数
+updateVisitCount();
+
+// ---------- 启动 ----------
+
+render();
+</script>
+</body>
+</html>
