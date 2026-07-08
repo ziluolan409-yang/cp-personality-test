@@ -1109,15 +1109,20 @@ const app = document.getElementById('app');
 // ---------- 工具函数 ----------
 
 function computeMaxScores() {
+  // 计算每个维度的真实可达最高分（每题取该维度最高选项，累加20题）
   const maxes = [0, 0, 0, 0];
   QUESTIONS.forEach(q => {
+    const qMax = [0, 0, 0, 0];
     q.options.forEach(opt => {
       for (let i = 0; i < 4; i++) {
-        if (opt.scores[i] > maxes[i]) maxes[i] = opt.scores[i];
+        if (opt.scores[i] > qMax[i]) qMax[i] = opt.scores[i];
       }
     });
+    for (let i = 0; i < 4; i++) {
+      maxes[i] += qMax[i];
+    }
   });
-  return maxes.map(m => m * 20);
+  return maxes;
 }
 
 function recalcScores() {
@@ -1133,16 +1138,22 @@ function recalcScores() {
 }
 
 function getPersonalityKey() {
-  const [砥, 渊, 炽, 逸] = state.scores;
+  const dims = state.scores;
   const maxScores = computeMaxScores();
-  // 阈值设为最大分的35%，与renderResult保持一致
-  const thresholds = maxScores.map(m => Math.ceil(m * 0.35));
-  return [
-    砥 >= thresholds[0] ? 'H' : 'L',
-    渊 >= thresholds[1] ? 'H' : 'L',
-    炽 >= thresholds[2] ? 'H' : 'L',
-    逸 >= thresholds[3] ? 'H' : 'L'
-  ].join('');
+  // 阈值设为最大分的30%
+  const thresholds = maxScores.map(m => Math.ceil(m * 0.30));
+  let hls = dims.map((s, i) => s >= thresholds[i] ? 'H' : 'L');
+  // 安全阀：避免全L或全H
+  const ratios = dims.map((s, i) => s / thresholds[i]);
+  if (hls.every(h => h === 'L')) {
+    const bestIdx = ratios.indexOf(Math.max(...ratios));
+    hls[bestIdx] = 'H';
+  }
+  if (hls.every(h => h === 'H')) {
+    const worstIdx = ratios.indexOf(Math.min(...ratios));
+    hls[worstIdx] = 'L';
+  }
+  return hls.join('');
 }
 
 // ---------- 页面渲染（全量，仅用于页面切换） ----------
@@ -1301,14 +1312,24 @@ function updateQuizAnswerUI(optIdx) {
 function renderResult() {
   const [砥, 渊, 炽, 逸] = state.scores;
   const maxScores = computeMaxScores();
-  // 阈值设为最大分的35%，只有远低于平均水平才算L，使"未激活"等全L型极为罕见
-  const thresholds = maxScores.map(m => Math.ceil(m * 0.35));
+  const thresholds = maxScores.map(m => Math.ceil(m * 0.30));
   const hls = [
     砥 >= thresholds[0] ? 'H' : 'L',
     渊 >= thresholds[1] ? 'H' : 'L',
     炽 >= thresholds[2] ? 'H' : 'L',
     逸 >= thresholds[3] ? 'H' : 'L'
   ];
+  // 安全阀：避免全L或全H
+  const dimScoresRaw = [砥, 渊, 炽, 逸];
+  const normalized = dimScoresRaw.map((s, i) => s / thresholds[i]);
+  if (hls.every(h => h === 'L')) {
+    const bestIdx = normalized.indexOf(Math.max(...normalized));
+    hls[bestIdx] = 'H';
+  }
+  if (hls.every(h => h === 'H')) {
+    const worstIdx = normalized.indexOf(Math.min(...normalized));
+    hls[worstIdx] = 'L';
+  }
   const key = hls.join('');
   const personality = PERSONALITIES[key];
 
