@@ -52,4 +52,3 @@ git push -u origin main
 分享链接：**`https://ziluolan409-yang.github.io/cp-personality-test/cp-personality-test.html`**
 
 手机、电脑都能打开，微信里也能直接转发！
-
